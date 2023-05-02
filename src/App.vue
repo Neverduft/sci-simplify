@@ -33,7 +33,7 @@
     </v-main>
     <v-footer
       fixed-bottom
-      style="display: flex; z-index: 0; background-color: #1e3799"
+      style="display: flex; z-index: 0; background-color: rgb(74, 105, 189)"
     >
     </v-footer>
   </v-app>

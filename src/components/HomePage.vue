@@ -1,11 +1,7 @@
 <template>
   <v-container>
     <v-row class="text-center">
-      <v-col
-        cols="12"
-        style="background-color: #40739e; box-shadow: 0 0 8px 8px #40739e"
-        align="center"
-      >
+      <v-col cols="12" align="center">
         <v-img class="mx-4 mt-1 logo"></v-img>
         <!-- TODO ADD LOGO -->
 
@@ -21,21 +17,25 @@
               </p>
             </v-card-text>
             <v-row no-gutters align="center" justify="center">
-              <v-col cols="6">
-                <v-file-input
-                  v-model="uploadedPDF"
-                  accept=".pdf"
-                  placeholder="Click to select or drag PDF file here"
-                  prepend-icon="mdi-file-pdf"
-                  color="#40739e"
-                ></v-file-input>
+              <v-col cols="4">
+                <div class="drop-zone">
+                  <v-file-input
+                    v-model="uploadedPDF"
+                    accept=".pdf"
+                    placeholder="Click to select or drag PDF file here"
+                    color="#40739e"
+                    class="file-input"
+                    show-size
+                  ></v-file-input>
+                  <!-- @change="onFileChange" -->
+                </div>
               </v-col>
             </v-row>
             <v-card-actions class="mx-2 mb-2">
               <v-btn
                 color="#78a9ce"
                 class="white--text"
-                @click="processFile"
+                @click="analyzePDF"
                 :disabled="!isPDFUploaded"
               >
                 Confirm
@@ -49,6 +49,16 @@
                 Reset
               </v-btn>
             </v-card-actions>
+
+            <div v-if="sectionsContent">
+              <div
+                v-for="(content, index) in sectionsContent.content"
+                :key="index"
+              >
+                <h2>{{ sectionsContent.sections[index] }}</h2>
+                <p>{{ content }}</p>
+              </div>
+            </div>
           </v-card>
         </transition>
       </v-col>
@@ -66,25 +76,30 @@ export default {
     apiUrl: "local",
     awaitingServer: false,
     isPDFUploaded: false,
+    isDragOver: false,
+    sectionsContent: null,
   }),
 
   methods: {
-    async processFile() {
+    async analyzePDF() {
       if (this.uploadedPDF) {
-        console.log("Processing file:", this.uploadedPDF);
+        console.log("Analyzing file:", this.uploadedPDF);
 
         const formData = new FormData();
         formData.append("pdf", this.uploadedPDF);
 
         try {
-          const response = await fetch("http://localhost:8000/upload", {
+          const response = await fetch("http://localhost:8000/analyze", {
             method: "POST",
             body: formData,
           });
 
           if (response.ok) {
-            console.log("File uploaded successfully");
-            // Process the response data as needed
+            console.log("File analyzed successfully");
+            const data = await response.json();
+            const parsedData = JSON.parse(data.message);
+            this.sectionsContent = parsedData;
+            console.log(this.sectionsContent);
           } else {
             console.error("File upload failed");
           }
@@ -110,6 +125,18 @@ export default {
 
 
 <style scoped>
+.drop-zone {
+  position: relative;
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  text-align: center;
+  width: 90%;
+  padding: 20px;
+}
+.drop-zone--drag-over {
+  border-color: blue;
+}
+
 .circularProgress {
   display: flex;
   position: absolute;
