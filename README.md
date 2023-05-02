@@ -1,4 +1,4 @@
-# qrated-app
+# sci-simplify
 
 ## Project setup
 ```
