@@ -8,7 +8,7 @@
         <div class="mx-2">SciSimplify</div>
       </div>
       <v-spacer></v-spacer>
-      <v-btn
+      <!-- <v-btn
         color="#1e3799"
         class="white--text my-2 mr-2"
         large
@@ -16,12 +16,12 @@
         @click="$refs.HomePage.togglePage(true)"
       >
         Home
-      </v-btn>
+      </v-btn> -->
 
-      <v-btn href="tmp" target="_blank" text class="black--text">
+      <!-- <v-btn href="tmp" target="_blank" text class="black--text">
         <span class="mr-2" style="color: #1e3799">About</span>
         <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+      </v-btn> -->
     </v-app-bar>
     <v-main
       style="
