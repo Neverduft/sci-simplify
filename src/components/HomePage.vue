@@ -13,20 +13,32 @@
               </h2>
               <p>
                 SciSimplify will analyze and reorganize it into an easy to
-                understand format.<br />Additionally, you can view definitions of words by clicking on them.
+                understand format.<br />Additionally, you can view definitions
+                of words by clicking on them.
               </p>
             </v-card-text>
             <v-row no-gutters align="center" justify="center">
               <v-col cols="8">
                 <div class="drop-zone" @drop="dropHandler" @dragover.prevent>
-                  <v-file-input v-model="uploadedPDF" accept=".pdf" placeholder="Click to select or drag PDF file here"
-                    color="#40739e" class="file-input text-body-1" show-size></v-file-input>
+                  <v-file-input
+                    v-model="uploadedPDF"
+                    accept=".pdf"
+                    placeholder="Click to select or drag PDF file here"
+                    color="#40739e"
+                    class="file-input text-body-1"
+                    show-size
+                  ></v-file-input>
                   <!-- @change="onFileChange" -->
                 </div>
               </v-col>
             </v-row>
-            <v-card-actions class="mx-2 mb-2" style="justify-content: center;">
-              <v-btn color="#78a9ce" class="white--text" @click="analyzePDF" :disabled="!isPDFUploaded">
+            <v-card-actions class="mx-2 mb-2" style="justify-content: center">
+              <v-btn
+                color="#78a9ce"
+                class="white--text"
+                @click="analyzePDF"
+                :disabled="!isPDFUploaded"
+              >
                 {{ this.action }}
               </v-btn>
               <!-- <v-btn
@@ -39,9 +51,15 @@
               </v-btn> -->
             </v-card-actions>
 
-            <div v-if="hoveredWord" class="hover-box"
-              :style="{ left: hoverBoxPosition.x + 'px', top: hoverBoxPosition.y + 'px' }"
-              style="font-size: 12px !important; max-width: 30vw;">
+            <div
+              v-if="hoveredWord"
+              class="hover-box"
+              :style="{
+                left: hoverBoxPosition.x + 'px',
+                top: hoverBoxPosition.y + 'px',
+              }"
+              style="font-size: 12px !important; max-width: 30vw"
+            >
               {{ hoveredWord }}
             </div>
 
@@ -51,18 +69,51 @@
                 <h2>{{ sectionsContent.section_titles[index] }}</h2>
                 <p>{{ content }}</p>
               </div> -->
-              <div v-for="(content, index) in sectionsContent.sections" :key="'section-' + index"
-                class="text-left text-body-1" style="font-size: 12px !important;  font-family: Helvetica, sans-serif;">
+              <div
+                v-for="(content, index) in sectionsContent.sections"
+                :key="'section-' + index"
+                class="text-left text-body-1"
+                style="
+                  font-size: 12px !important;
+                  font-family: Helvetica, sans-serif;
+                "
+              >
                 <h2>{{ sectionsContent.section_titles[index] }}</h2>
                 <p>
-                  <span v-for="wordObj in splitParagraphIntoSpans(content)" :key="'word-' + wordObj.id"
-                    @click="clickShowHoverBox(wordObj.word, $event)" @mouseleave="stopHighlighting"
-                    class="hoverable-word">
+                  <span
+                    v-for="wordObj in splitParagraphIntoSpans(content)"
+                    :key="'word-' + wordObj.id"
+                    @click="clickShowHoverBox(wordObj.word, $event)"
+                    @mouseleave="stopHighlighting"
+                    class="hoverable-word"
+                  >
                     {{ wordObj.word }}
                   </span>
                 </p>
               </div>
+            </div>
+            <div class="main">
+              <!-- Facebook Icon -->
+              <div class="icon fb">
+                <i class="fa-brands fa-facebook-f"></i>
+                <a class="Text" href="https://www.facebook.com/" target="_blank" style="text-decoration: none;"
+                  ><span>Facebook</span></a
+                >
+              </div>
 
+              <!-- Twitter Icon -->
+              <div class="icon twt">
+                <i class="fa-brands fa-twitter"></i>
+                <a class="Text" href="https://twitter.com/?lang=de" target="_blank" style="text-decoration: none;"
+                  ><span>Twitter</span></a
+                >
+              </div>
+
+              <!-- Linkedin Icon -->
+              <div class="icon lnk">
+                <i class="fa-brands fa-linkedin-in"></i>
+                <span>Linkedin</span>
+              </div>
             </div>
           </v-card>
         </transition>
@@ -95,9 +146,9 @@ export default {
       if (this.uploadedPDF) {
         if (this.sectionsContent !== null) {
           this.sectionsContent = null;
-          this.action = "SUMMARIZE"
+          this.action = "SUMMARIZE";
           this.uploadedPDF = null;
-          return
+          return;
         }
 
         console.log("Analyzing file:", this.uploadedPDF);
@@ -114,7 +165,7 @@ export default {
           if (response.ok) {
             console.log("File analyzed successfully");
             const data = await response.json();
-            const parsedData = data.message // JSON.parse(data.message);
+            const parsedData = data.message; // JSON.parse(data.message);
             this.sectionsContent = parsedData;
             console.log(this.sectionsContent);
           } else {
@@ -129,7 +180,9 @@ export default {
     async fetchWordDefinition(word) {
       this.loadingDefinition = true;
       try {
-        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+        const response = await fetch(
+          `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
+        );
 
         if (response.ok) {
           const data = await response.json();
@@ -154,7 +207,7 @@ export default {
         // Use DataTransferItemList interface to access the file(s)
         for (let i = 0; i < event.dataTransfer.items.length; i++) {
           // If dropped items aren't files, reject them
-          if (event.dataTransfer.items[i].kind === 'file') {
+          if (event.dataTransfer.items[i].kind === "file") {
             const file = event.dataTransfer.items[i].getAsFile();
             this.uploadedPDF = file;
           }
@@ -177,7 +230,7 @@ export default {
     },
 
     splitParagraphIntoSpans(para) {
-      return para.split(' ').map((word, i) => {
+      return para.split(" ").map((word, i) => {
         return { word: word, id: i };
       });
     },
@@ -187,8 +240,8 @@ export default {
         word = word.replace(",", "").replace(".", "");
         this.clickedWord = word;
         var definition = await this.fetchWordDefinition(word);
-        definition = `[${word}]\n` + definition
-        this.hoveredWord = definition ? definition : 'Definition not found';
+        definition = `[${word}]\n` + definition;
+        this.hoveredWord = definition ? definition : "Definition not found";
         this.hoverBoxPosition.x = event.clientX;
         this.hoverBoxPosition.y = event.clientY;
       }
@@ -201,7 +254,6 @@ export default {
     stopHighlighting() {
       this.hoveredWord = null;
     },
-
   },
 
   watch: {
@@ -211,13 +263,12 @@ export default {
 
     sectionsContent(newValue) {
       if (newValue !== null) {
-        this.action = "RESET"
+        this.action = "RESET";
       }
-    }
+    },
   },
 };
 </script>
-
 
 <style scoped>
 .hover-box {
@@ -294,5 +345,79 @@ export default {
     align-items: center;
     width: 50%;
   }
+}
+.icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 100px;
+  background: #fff;
+  margin: 20px;
+  text-align: center;
+  font-size: 50px;
+  line-height: 40px;
+  font-family: sans-serif;
+  overflow: hidden;
+  box-shadow: 5px 10px 20px rgba(150, 150, 150, 0.3);
+  transition: all 0.3s ease-out;
+}
+.icon:hover {
+  width: 400px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  color: #fff;
+}
+.icon:hover i {
+  color: #fff;
+}
+.icon .fa-facebook-f {
+  color: #1a6ed8;
+}
+.fb:hover {
+  background: #1a6ed8;
+}
+
+.icon .fa-twitter {
+  color: #1da1f2;
+}
+.twt:hover {
+  background: #1da1f2;
+}
+.icon .fa-linkedin-in {
+  color: #0077b5;
+}
+.lnk:hover {
+  background: #0077b5;
+}
+.icon .fa-github {
+  color: #000;
+}
+.git:hover {
+  background: #000;
+}
+.icon .fa-youtube {
+  color: #fe0000;
+}
+.yt:hover {
+  background: #fe0000;
+}
+
+/* responsive */
+@media only screen and (min-width: 320px) and (max-width: 991px) {
+  .main {
+    flex-direction: column;
+  }
+}
+.main {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+}
+.Text {
+  text-decoration: none !important;
 }
 </style>
