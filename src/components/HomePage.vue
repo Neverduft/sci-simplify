@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row class="text-center">
-      <v-col cols="12" align="center">
+      <v-col cols="14" align="center">
         <v-img class="mx-4 mt-1 logo"></v-img>
         <!-- TODO ADD LOGO -->
 
@@ -41,18 +41,18 @@
 
             <div v-if="hoveredWord" class="hover-box"
               :style="{ left: hoverBoxPosition.x + 'px', top: hoverBoxPosition.y + 'px' }"
-              style="font-size: 12px !important; max-width: 30vw;">
+              style="font-size: 14px !important; max-width: 30vw;">
               {{ hoveredWord }}
             </div>
 
             <div v-if="sectionsContent">
               <!-- <div v-for="(content, index) in sectionsContent.sections" :key="index" class="text-left text-body-1"
-                style="font-size: 12px !important;">
+                style="font-size: 14px !important;">
                 <h2>{{ sectionsContent.section_titles[index] }}</h2>
                 <p>{{ content }}</p>
               </div> -->
               <div v-for="(content, index) in sectionsContent.sections" :key="'section-' + index"
-                class="text-left text-body-1" style="font-size: 12px !important;  font-family: Helvetica, sans-serif;">
+                class="text-left text-body-1" style="font-size: 14px !important;  font-family: Helvetica, sans-serif;">
                 <h2>{{ sectionsContent.section_titles[index] }}</h2>
                 <p>
                   <span v-for="wordObj in splitParagraphIntoSpans(content)" :key="'word-' + wordObj.id"
