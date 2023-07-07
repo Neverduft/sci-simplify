@@ -80,7 +80,7 @@
               </div>
             </div>
             <div class="main">
-              <!-- Facebook Icon -->
+              <!-- Facebook Button -->
               <div class="icon fb">
                 <i class="fa-brands fa-facebook-f"></i>
                 <a class="Text" href="https://www.facebook.com/" target="_blank" style="text-decoration: none;"
@@ -88,7 +88,7 @@
                 >
               </div>
 
-              <!-- Twitter Icon -->
+              <!-- Twitter Button -->
               <div class="icon twt">
                 <i class="fa-brands fa-twitter"></i>
                 <a class="Text" href="https://twitter.com/?lang=de" target="_blank" style="text-decoration: none;"
@@ -96,7 +96,7 @@
                 >
               </div>
 
-              <!-- Linkedin Icon -->
+              <!-- Linkedin Button -->
               <div class="icon lnk">
                 <i class="fa-brands fa-linkedin-in"></i>
                 <span>Linkedin</span>
