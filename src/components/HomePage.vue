@@ -57,7 +57,7 @@
               {{ hoveredWord }}
             </div>
 
-            <div v-if="sectionsContent">
+            <div v-if="sectionsContent !== null">
               <!-- <div v-for="(content, index) in sectionsContent.sections" :key="index" class="text-left text-body-1"
                 style="font-size: 14px !important;">
                 <h2>{{ sectionsContent.section_titles[index] }}</h2>
@@ -152,7 +152,7 @@ export default {
           if (response.ok) {
             console.log("File analyzed successfully");
             const data = await response.json();
-            const parsedData = data.message; // JSON.parse(data.message);
+            const parsedData = JSON.parse(data.message);
             this.sectionsContent = parsedData;
             console.log(this.sectionsContent);
           } else {
@@ -217,7 +217,10 @@ export default {
     },
 
     splitParagraphIntoSpans(para) {
-      return para.split(" ").map((word, i) => {
+      if(para === null){
+        return;
+      }
+      return para.split(' ').map((word, i) => {
         return { word: word, id: i };
       });
     },
