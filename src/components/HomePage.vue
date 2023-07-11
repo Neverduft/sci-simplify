@@ -20,35 +20,19 @@
             <v-row no-gutters align="center" justify="center">
               <v-col cols="8">
                 <div class="drop-zone" @drop="dropHandler" @dragover.prevent>
-                  <v-file-input
-                    v-model="uploadedPDF"
-                    accept=".pdf"
-                    placeholder="Click to select or drag PDF file here"
-                    color="#40739e"
-                    class="file-input text-body-1"
-                    show-size
-                  ></v-file-input>
+                  <v-file-input v-model="uploadedPDF" accept=".pdf" placeholder="Click to select or drag PDF file here"
+                    color="#40739e" class="file-input text-body-1" show-size></v-file-input>
                   <!-- @change="onFileChange" -->
                 </div>
               </v-col>
             </v-row>
             <v-card-actions class="mx-2 mb-2" style="justify-content: center">
-              <v-btn
-                color="#78a9ce"
-                class="white--text"
-                @click="analyzePDF"
-                :disabled="!isPDFUploaded"
-              >
-                {{ this.action }}
+              <v-btn color="#78a9ce" class="white--text" @click="analyzePDF" :disabled="awaitingServer || !isPDFUploaded">
+                <span v-if="!awaitingServer">{{ this.action }}</span>
+                <v-progress-circular indeterminate color="white" size="24" v-else></v-progress-circular>
               </v-btn>
-              <!-- <v-btn
-                color="#78a9ce"
-                class="white--text"
-                @click="resetFile"
-                :disabled="!isPDFUploaded"
-              >
-                Reset
-              </v-btn> -->
+
+
             </v-card-actions>
 
             <div v-if="hoveredWord" class="hover-box"
@@ -67,13 +51,9 @@
                 class="text-left text-body-1" style="font-size: 12px !important;  font-family: Helvetica, sans-serif;">
                 <h2>{{ sectionsContent.section_titles[index] }}</h2>
                 <p>
-                  <span
-                    v-for="wordObj in splitParagraphIntoSpans(content)"
-                    :key="'word-' + wordObj.id"
-                    @click="clickShowHoverBox(wordObj.word, $event)"
-                    @mouseleave="stopHighlighting"
-                    class="hoverable-word"
-                  >
+                  <span v-for="wordObj in splitParagraphIntoSpans(content)" :key="'word-' + wordObj.id"
+                    @click="clickShowHoverBox(wordObj.word, $event)" @mouseleave="stopHighlighting"
+                    class="hoverable-word">
                     {{ wordObj.word }}
                   </span>
                 </p>
@@ -83,17 +63,15 @@
               <!-- Facebook Button -->
               <div class="icon fb">
                 <i class="fa-brands fa-facebook-f"></i>
-                <a class="Text" href="https://www.facebook.com/" target="_blank" style="text-decoration: none;"
-                  ><span>Facebook</span></a
-                >
+                <a class="Text" href="https://www.facebook.com/" target="_blank"
+                  style="text-decoration: none;"><span>Facebook</span></a>
               </div>
 
               <!-- Twitter Button add -->
               <div class="icon twt">
                 <i class="fa-brands fa-twitter"></i>
-                <a class="Text" href="https://twitter.com/?lang=de" target="_blank" style="text-decoration: none;"
-                  ><span>Twitter</span></a
-                >
+                <a class="Text" href="https://twitter.com/?lang=de" target="_blank"
+                  style="text-decoration: none;"><span>Twitter</span></a>
               </div>
 
               <!-- Linkedin Button -->
@@ -126,6 +104,7 @@ export default {
     hoverBoxPosition: { x: 0, y: 0 },
     loadingDefinition: false,
     action: "SUMMARIZE",
+    loading: false,
   }),
 
   methods: {
@@ -142,6 +121,8 @@ export default {
 
         const formData = new FormData();
         formData.append("pdf", this.uploadedPDF);
+
+        this.awaitingServer = true;  // Start the loading spinner
 
         try {
           const response = await fetch("http://localhost:8000/analyze", {
@@ -160,9 +141,12 @@ export default {
           }
         } catch (error) {
           console.error("Error uploading file:", error);
+        } finally {
+          this.awaitingServer = false;  // Stop the loading spinner
         }
       }
     },
+
 
     async fetchWordDefinition(word) {
       this.loadingDefinition = true;
@@ -217,7 +201,7 @@ export default {
     },
 
     splitParagraphIntoSpans(para) {
-      if(para === null){
+      if (para === null) {
         return;
       }
       return para.split(' ').map((word, i) => {
@@ -336,6 +320,7 @@ export default {
     width: 50%;
   }
 }
+
 .icon {
   width: 50px;
   height: 50px;
@@ -350,6 +335,7 @@ export default {
   box-shadow: 5px 10px 20px rgba(150, 150, 150, 0.3);
   transition: all 0.3s ease-out;
 }
+
 .icon:hover {
   width: 400px;
   cursor: pointer;
@@ -358,12 +344,15 @@ export default {
   justify-content: space-evenly;
   color: #fff;
 }
+
 .icon:hover i {
   color: #fff;
 }
+
 .icon .fa-facebook-f {
   color: #1a6ed8;
 }
+
 .fb:hover {
   background: #1a6ed8;
 }
@@ -371,24 +360,31 @@ export default {
 .icon .fa-twitter {
   color: #1da1f2;
 }
+
 .twt:hover {
   background: #1da1f2;
 }
+
 .icon .fa-linkedin-in {
   color: #0077b5;
 }
+
 .lnk:hover {
   background: #0077b5;
 }
+
 .icon .fa-github {
   color: #000;
 }
+
 .git:hover {
   background: #000;
 }
+
 .icon .fa-youtube {
   color: #fe0000;
 }
+
 .yt:hover {
   background: #fe0000;
 }
@@ -399,6 +395,7 @@ export default {
     flex-direction: column;
   }
 }
+
 .main {
   width: 100%;
   height: 100px;
@@ -407,6 +404,7 @@ export default {
   justify-content: center;
   background-color: white;
 }
+
 .Text {
   text-decoration: none !important;
 }
